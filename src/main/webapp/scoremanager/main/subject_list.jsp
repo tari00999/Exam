@@ -13,13 +13,13 @@
 		<section class="me=4">
 			<h2 class="h3 mb-3 fw-norma bg-secondary bg-opacity-10 py-2 px-4">科目管理</h2>
 			<div class="my-2 text-end px-4">
-				<a href="SubjecttCreate.action">新規登録</a>
+				<a href="SubjectCreate.action">新規登録</a>
 			</div>
 			
 
 
 			<c:choose>
-				<c:when test="${subjects.size()>0 }">
+				<c:when test="${subjects_set.size()>0 }">
 					
 					<table class="table">
 						<tr>
@@ -29,17 +29,17 @@
 							<th></th>
 						</tr>
 						
-						<c:forEach var="subject" items="${subjects}">
+						<c:forEach var="subject" items="${subjects_set}">
 							<tr>
-								<td>${subject.code }</td>
+								<td>${subject.cd }</td>
 								<td>${subject.name}</td>
 								<td>
-									<a href="SubjectUpdate.action?code=${subject.code }">
+									<a href="SubjectUpdate.action?code=${subject.cd }">
 										変更
 									</a>
 								</td>
 								<td>
-									<a href="SubjectDelete.action?code=${subject.code }">
+									<a href="SubjectDelete.action?code=${subject.cd }">
 										削除
 									</a>
 								</td>
