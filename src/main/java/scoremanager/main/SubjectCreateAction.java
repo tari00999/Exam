@@ -11,7 +11,7 @@ import tool.Action;
 public class SubjectCreateAction extends Action {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // セッション取得
         HttpSession session = request.getSession();
@@ -36,6 +36,6 @@ public class SubjectCreateAction extends Action {
         dao.insert(subject);
 
         // 完了画面へ
-        return "subject-create-done.jsp";
+        return;
     }
 }
