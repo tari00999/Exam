@@ -52,4 +52,9 @@ public class SubjectDao {
 		// TODO 自動生成されたメソッド・スタブ
 		
 	}
+
+	public int update(Subject subject) {
+		// TODO 自動生成されたメソッド・スタブ
+		return 0;
+	}
 }
