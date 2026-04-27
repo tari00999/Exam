@@ -10,26 +10,32 @@ import tool.Action;
 
 public class SubjectCreateAction extends Action {
 
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-	    HttpSession session = request.getSession();
-	    School school = (School) session.getAttribute("school");
+        HttpSession session = request.getSession();
+        School school = (School) session.getAttribute("school");
 
-	    String code = request.getParameter("code");
-	    String name = request.getParameter("name");
-	    int credit = Integer.parseInt(request.getParameter("credit"));
+        String code = request.getParameter("code");
+        String name = request.getParameter("name");
 
-	    Subject subject = new Subject();
-	    subject.setCode(code);
-	    subject.setName(name);
-	    subject.setCredit(credit);
-	    subject.setSchool(school);
+        // 入力チェック（あると安全）
+        if (code == null || code.isEmpty() ||
+            name == null || name.isEmpty()) {
 
-	    SubjectDao dao = new SubjectDao();
-	    dao.insert(subject);
+            request.setAttribute("error", "未入力の項目があります");
+            request.getRequestDispatcher("subject_create.jsp").forward(request, response);
+            return;
+        }
 
-	    // フォワードで遷移
-	    request.getRequestDispatcher("subject-create-done.jsp").forward(request, response);
-	}
+        Subject subject = new Subject();
+        subject.setCode(code);
+        subject.setName(name);
+        subject.setSchool(school);
+
+        SubjectDao dao = new SubjectDao();
+        dao.insert(subject);
+
+        request.getRequestDispatcher("subject_create_done.jsp").forward(request, response);
+    }
 }
