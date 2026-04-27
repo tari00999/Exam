@@ -47,4 +47,9 @@ public class SubjectDao {
             "password"
         );
     }
+
+	public void insert(Subject subject) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
 }
