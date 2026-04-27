@@ -10,18 +10,18 @@ import tool.Action;
 public class SubjectDeleteExecuteAction extends Action {
 
     @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
         School school = (School) session.getAttribute("school");
 
-        // パラメータ取得
         String code = request.getParameter("code");
 
         // ===== 入力チェック =====
         if (code == null || code.isEmpty()) {
             request.setAttribute("error", "科目コードが指定されていません");
-            return "subject-delete.jsp"; // 確認画面に戻す
+            request.getRequestDispatcher("subject_delete.jsp").forward(request, response);
+            return;
         }
 
         // ===== 削除処理 =====
@@ -31,10 +31,11 @@ public class SubjectDeleteExecuteAction extends Action {
         // ===== 結果チェック =====
         if (count == 0) {
             request.setAttribute("error", "削除に失敗しました");
-            return "subject-delete.jsp";
+            request.getRequestDispatcher("subject_delete.jsp").forward(request, response);
+            return;
         }
 
         // 成功
-        return "subject-delete-done.jsp";
+        request.getRequestDispatcher("subject_delete_done.jsp").forward(request, response);
     }
 }

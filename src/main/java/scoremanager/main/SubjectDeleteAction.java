@@ -9,32 +9,29 @@ import tool.Action;
 
 public class SubjectDeleteAction extends Action {
 
-    @Override
-    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Override
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        HttpSession session = request.getSession();
-        School school = (School) session.getAttribute("school");
+	    HttpSession session = request.getSession();
+	    School school = (School) session.getAttribute("school");
 
-        // パラメータ取得（削除対象）
-        String code = request.getParameter("code");
+	    String code = request.getParameter("code");
 
-        // 簡単なチェック
-        if (code == null || code.isEmpty()) {
-            request.setAttribute("error", "科目コードが指定されていません");
-            return "subject-list.jsp";
-        }
+	    if (code == null || code.isEmpty()) {
+	        request.setAttribute("error", "科目コードが指定されていません");
+	        request.getRequestDispatcher("subject_list.jsp").forward(request, response);
+	        return;
+	    }
 
-        // 削除処理
-        SubjectDao dao = new SubjectDao();
-        int count = dao.delete(code, school);
+	    SubjectDao dao = new SubjectDao();
+	    int count = dao.delete(code, school);
 
-        // 結果チェック
-        if (count == 0) {
-            request.setAttribute("error", "削除に失敗しました");
-            return "subject-list.jsp";
-        }
+	    if (count == 0) {
+	        request.setAttribute("error", "削除に失敗しました");
+	        request.getRequestDispatcher("subject_list.jsp").forward(request, response);
+	        return;
+	    }
 
-        // 成功
-        return "subject-delete-done.jsp";
-    }
+	    request.getRequestDispatcher("subject_delete_done.jsp").forward(request, response);
+	}
 }

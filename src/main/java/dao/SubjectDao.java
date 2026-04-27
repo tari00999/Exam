@@ -57,4 +57,9 @@ public class SubjectDao {
 		// TODO 自動生成されたメソッド・スタブ
 		return 0;
 	}
+
+	public int delete(String code, School school) {
+		// TODO 自動生成されたメソッド・スタブ
+		return 0;
+	}
 }
