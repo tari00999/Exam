@@ -11,7 +11,7 @@ import tool.Action;
 public class SubjectUpdateExecuteAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
         School school = (School) session.getAttribute("school");
@@ -52,10 +52,10 @@ public class SubjectUpdateExecuteAction extends Action {
         // 更新結果チェック
         if (count == 0) {
             request.setAttribute("error", "更新に失敗しました");
-            return;
+            return "subject-update.jsp";
         }
 
         // 成功
-        return;
+        return "subject-update-done.jsp";
     }
 }
