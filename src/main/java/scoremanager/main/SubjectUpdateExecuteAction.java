@@ -18,33 +18,23 @@ public class SubjectUpdateExecuteAction extends Action {
 
         String code = request.getParameter("code");
         String name = request.getParameter("name");
-        String creditStr = request.getParameter("credit");
 
         // ===== 入力チェック =====
         if (code == null || code.isEmpty() ||
-            name == null || name.isEmpty() ||
-            creditStr == null || creditStr.isEmpty()) {
+            name == null || name.isEmpty()) {
 
             request.setAttribute("error", "未入力の項目があります");
             request.getRequestDispatcher("subject_update.jsp").forward(request, response);
             return;
         }
 
-        int credit;
-        try {
-            credit = Integer.parseInt(creditStr);
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "単位は数値で入力してください");
-            request.getRequestDispatcher("subject_update.jsp").forward(request, response);
-            return;
-        }
-
+        // Subject作成
         Subject subject = new Subject();
         subject.setCode(code);
         subject.setName(name);
-        subject.setCredit(credit);
         subject.setSchool(school);
 
+        // 更新処理
         SubjectDao dao = new SubjectDao();
         int count = dao.update(subject);
 
