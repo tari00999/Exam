@@ -33,7 +33,7 @@ public class SubjectUpdateAction extends Action {
 
         // DAOで更新
         SubjectDao dao = new SubjectDao();
-        ((Object) dao).update(subject);
+        dao.update(subject);
 
         // 完了画面へ
         return;
