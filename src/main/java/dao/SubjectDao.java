@@ -62,4 +62,9 @@ public class SubjectDao {
 		// TODO 自動生成されたメソッド・スタブ
 		return 0;
 	}
+
+	public Subject get(String code, School school) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 }
