@@ -11,7 +11,7 @@ import tool.Action;
 public class SubjectCreateAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // セッション取得
         HttpSession session = request.getSession();
