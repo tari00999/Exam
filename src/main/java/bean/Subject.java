@@ -3,7 +3,7 @@ package bean;
 public class Subject {
     private String code;
     private String name;
-    private int credit;
+    private School school;
 
     // getter / setter
     public String getCode() { return code; }
@@ -12,10 +12,6 @@ public class Subject {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public int getCredit() { return credit; }
-    public void setCredit(int credit) { this.credit = credit; }
-	public void setSchool(School school) {
-		// TODO 自動生成されたメソッド・スタブ
-		
-	}
+    public School getSchool() { return school; }
+    public void setSchool(School school) { this.school = school; }
 }
