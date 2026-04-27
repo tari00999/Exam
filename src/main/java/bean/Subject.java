@@ -14,4 +14,8 @@ public class Subject {
 
     public int getCredit() { return credit; }
     public void setCredit(int credit) { this.credit = credit; }
+	public void setSchool(School school) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
 }

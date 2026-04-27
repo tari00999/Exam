@@ -1,6 +1,7 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 import bean.School;
 import bean.Subject;
 
-public class SubjectDao extends {
+public class SubjectDao {
 
     public List<Subject> findAll(School school) throws Exception {
 
@@ -20,7 +21,7 @@ public class SubjectDao extends {
         String sql = "SELECT code, name, credit FROM subject WHERE school = ?";
 
         PreparedStatement st = con.prepareStatement(sql);
-        st.setNString(1, school);
+        st.setString(1, school.getCd()); // ←ここ重要
 
         ResultSet rs = st.executeQuery();
 
@@ -32,14 +33,18 @@ public class SubjectDao extends {
             list.add(s);
         }
 
+        rs.close();
         st.close();
         con.close();
 
         return list;
     }
 
-	private Connection getConnection() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
+    private Connection getConnection() throws Exception {
+        return DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/yourdb",
+            "user",
+            "password"
+        );
+    }
 }
