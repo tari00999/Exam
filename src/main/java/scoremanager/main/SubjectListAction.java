@@ -13,23 +13,23 @@ import tool.Action;
 public class SubjectListAction extends Action {
 
     @Override
-    public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // 安全チェック（おすすめ）
+        // 安全チェック
         if (teacher == null) {
-            return "login.jsp";
+            req.getRequestDispatcher("login.jsp").forward(req, res);
+            return;
         }
 
         SubjectDao dao = new SubjectDao();
-
         List<Subject> subjects = dao.findAll(teacher.getSchool());
 
         req.setAttribute("subjects", subjects);
 
-        // JSPへ遷移
-        return "subject_list.jsp";
+        // JSPへ
+        req.getRequestDispatcher("subject_list.jsp").forward(req, res);
     }
 }
