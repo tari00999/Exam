@@ -2,22 +2,26 @@ package scoremanager.main;
 
 import java.util.List;
 
+import bean.Subject;
+import bean.Teacher;
+import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import bean.Teacher;
-import bean.Subject;
-import dao.SubjectDao;
 import tool.Action;
 
 public class SubjectListAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public String execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
+
+        // 安全チェック（おすすめ）
+        if (teacher == null) {
+            return "login.jsp";
+        }
 
         SubjectDao dao = new SubjectDao();
 
@@ -25,6 +29,7 @@ public class SubjectListAction extends Action {
 
         req.setAttribute("subjects", subjects);
 
-        req.getRequestDispatcher("subject_list.jsp").forward(req, res);
+        // JSPへ遷移
+        return "subject_list.jsp";
     }
 }
