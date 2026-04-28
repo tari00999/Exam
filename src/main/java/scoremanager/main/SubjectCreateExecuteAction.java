@@ -5,6 +5,7 @@ import java.util.Map;
 
 import bean.School;
 import bean.Subject;
+import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,13 +18,16 @@ public class SubjectCreateExecuteAction extends Action {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
-        School school = (School) session.getAttribute("school");
+        Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // ログインチェック（安全）
-        if (school == null) {
+        // ログインチェック
+        if (teacher == null) {
             response.sendRedirect("Login.action");
             return;
         }
+
+        // ★ 正しい取得方法
+        School school = teacher.getSchool();
 
         String code = request.getParameter("code");
         String name = request.getParameter("name");
@@ -38,19 +42,16 @@ public class SubjectCreateExecuteAction extends Action {
             errors.put("name", "科目名を入力してください");
         }
 
-        // エラーがある場合
+        // エラー
         if (!errors.isEmpty()) {
             request.setAttribute("errors", errors);
-
-            // 入力値保持（重要）
             request.setAttribute("code", code);
             request.setAttribute("name", name);
-
             request.getRequestDispatcher("subject_create.jsp").forward(request, response);
             return;
         }
 
-        // 登録処理
+        // 登録
         Subject subject = new Subject();
         subject.setCode(code);
         subject.setName(name);
