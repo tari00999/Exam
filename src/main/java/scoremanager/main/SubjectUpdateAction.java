@@ -1,7 +1,7 @@
 package scoremanager.main;
 
-import bean.School;
 import bean.Subject;
+import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,26 +11,40 @@ import tool.Action;
 public class SubjectUpdateAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        HttpSession session = request.getSession();
-        School school = (School) session.getAttribute("school");
+        HttpSession session = req.getSession();
+        Teacher teacher = (Teacher) session.getAttribute("user");
 
-        String code = request.getParameter("code");
-
-        // チェック（あると安心）
-        if (code == null || code.isEmpty()) {
-            request.setAttribute("error", "科目コードが指定されていません");
-            request.getRequestDispatcher("subject_list.jsp").forward(request, response);
+        // ログイン
+        if (teacher == null) {
+            res.sendRedirect("Login.action");
             return;
         }
 
+        String code = req.getParameter("code");
+        String name = req.getParameter("name");
+
+        // 入力チェック
+        if (code == null || code.isEmpty() ||
+            name == null || name.isEmpty()) {
+
+            // 値を戻す
+            req.setAttribute("code", code);
+            req.setAttribute("name", name);
+
+            req.getRequestDispatcher("subject_update.jsp").forward(req, res);
+            return;
+        }
+
+        Subject subject = new Subject();
+        subject.setCode(code);
+        subject.setName(name);
+        subject.setSchool(teacher.getSchool());
+
         SubjectDao dao = new SubjectDao();
-        Subject subject = dao.get(code, school); // ※このメソッド必要
+        dao.update(subject);
 
-        request.setAttribute("subject", subject);
-
-        // JSPへ
-        request.getRequestDispatcher("subject_update.jsp").forward(request, response);
+        req.getRequestDispatcher("subject_update_done.jsp").forward(req, res);
     }
 }
