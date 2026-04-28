@@ -1,5 +1,6 @@
 package scoremanager.main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import bean.Subject;
@@ -18,15 +19,27 @@ public class SubjectListAction extends Action {
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // 安全チェック
+        // ログイン
         if (teacher == null) {
-            req.getRequestDispatcher("login.jsp").forward(req, res);
+            res.sendRedirect("Login.action"); // forwardより安全
             return;
         }
 
         SubjectDao dao = new SubjectDao();
-        List<Subject> subjects = dao.findAll(teacher.getSchool());
+        List<Subject> subjects = null;
 
+        try {
+            subjects = dao.findAll(teacher.getSchool());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        
+        if (subjects == null) {
+            subjects = new ArrayList<>();
+        }
+
+        // 必ずセット（null禁止）
         req.setAttribute("subjects", subjects);
 
         // JSPへ
