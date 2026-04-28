@@ -16,35 +16,33 @@ public class SubjectUpdateAction extends Action {
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // ログイン
+        // ログインチェック
         if (teacher == null) {
             res.sendRedirect("Login.action");
             return;
         }
 
         String code = req.getParameter("code");
-        String name = req.getParameter("name");
 
-        // 入力チェック
-        if (code == null || code.isEmpty() ||
-            name == null || name.isEmpty()) {
-
-            // 値を戻す
-            req.setAttribute("code", code);
-            req.setAttribute("name", name);
-
-            req.getRequestDispatcher("subject_update.jsp").forward(req, res);
+        // パラメータチェック
+        if (code == null || code.isEmpty()) {
+            res.sendRedirect("SubjectList.action");
             return;
         }
 
-        Subject subject = new Subject();
-        subject.setCode(code);
-        subject.setName(name);
-        subject.setSchool(teacher.getSchool());
-
         SubjectDao dao = new SubjectDao();
-        dao.update(subject);
+        Subject subject = dao.get(code, teacher.getSchool());
 
-        req.getRequestDispatcher("subject_update_done.jsp").forward(req, res);
+        // データなし対策
+        if (subject == null) {
+            res.sendRedirect("SubjectList.action");
+            return;
+        }
+
+        // JSPに渡す
+        req.setAttribute("code", subject.getCode());
+        req.setAttribute("name", subject.getName());
+
+        req.getRequestDispatcher("subject_update.jsp").forward(req, res);
     }
 }
