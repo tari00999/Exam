@@ -19,7 +19,7 @@ public class SubjectDao {
 
         Connection con = getConnection();
 
-        String sql = "SELECT code, name FROM subject WHERE school = ?";
+        String sql = "SELECT code, name FROM subject WHERE school_cd = ?";
 
         PreparedStatement st = con.prepareStatement(sql);
         st.setString(1, school.getCd());
@@ -45,7 +45,7 @@ public class SubjectDao {
 
         Connection con = getConnection();
 
-        String sql = "SELECT code, name FROM subject WHERE code = ? AND school = ?";
+        String sql = "SELECT code, name FROM subject WHERE code = ? AND school_cd = ?";
 
         PreparedStatement st = con.prepareStatement(sql);
         st.setString(1, code);
@@ -73,7 +73,7 @@ public class SubjectDao {
 
         Connection con = getConnection();
 
-        String sql = "INSERT INTO subject (code, name, school) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO subject (code, name, school_cd) VALUES (?, ?, ?)";
 
         PreparedStatement st = con.prepareStatement(sql);
         st.setString(1, subject.getCode());
@@ -91,7 +91,7 @@ public class SubjectDao {
 
         Connection con = getConnection();
 
-        String sql = "UPDATE subject SET name = ? WHERE code = ? AND school = ?";
+        String sql = "UPDATE subject SET name = ? WHERE code = ? AND school_cd = ?";
 
         PreparedStatement st = con.prepareStatement(sql);
         st.setString(1, subject.getName());
@@ -111,7 +111,7 @@ public class SubjectDao {
 
         Connection con = getConnection();
 
-        String sql = "DELETE FROM subject WHERE code = ? AND school = ?";
+        String sql = "DELETE FROM subject WHERE code = ? AND school_cd = ?";
 
         PreparedStatement st = con.prepareStatement(sql);
         st.setString(1, code);
