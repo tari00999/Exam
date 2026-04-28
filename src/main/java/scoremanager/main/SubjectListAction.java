@@ -19,9 +19,8 @@ public class SubjectListAction extends Action {
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // ログイン
         if (teacher == null) {
-            res.sendRedirect("Login.action"); // forwardより安全
+            res.sendRedirect("Login.action");
             return;
         }
 
@@ -34,15 +33,12 @@ public class SubjectListAction extends Action {
             e.printStackTrace();
         }
 
-        
         if (subjects == null) {
             subjects = new ArrayList<>();
         }
 
-        // 必ずセット（null禁止）
         req.setAttribute("subjects", subjects);
 
-        // JSPへ
         req.getRequestDispatcher("subject_list.jsp").forward(req, res);
     }
 }
