@@ -19,7 +19,7 @@ public class SubjectUpdateExecuteAction extends Action {
         HttpSession session = request.getSession();
         School school = (School) session.getAttribute("school");
 
-        //  ログインチェック
+        //  ログイン
         if (school == null) {
             response.sendRedirect("Login.action");
             return;
