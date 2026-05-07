@@ -1,5 +1,6 @@
 package scoremanager.main;
 
+import bean.Subject;   // ← 追加
 import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +20,16 @@ public class SubjectDeleteExecuteAction extends Action {
         // パラメータ取得
         String code = req.getParameter("code");
 
+        // Subjectオブジェクトを作成
+        Subject subject = new Subject();
+        subject.setCd(code);
+        subject.setSchool(teacher.getSchool());
+
         // DAO
         SubjectDao subjectDao = new SubjectDao();
 
-        // 削除実行（学校も条件に使う）
-        subjectDao.delete(code, teacher.getSchool());
+        // 削除実行
+        subjectDao.delete(subject);
 
         // 完了画面へ
         req.getRequestDispatcher("subject_delete_done.jsp")

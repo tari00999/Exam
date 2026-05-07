@@ -63,7 +63,7 @@ public class SubjectCreateExecuteAction extends Action {
             subject.setName(name);
             subject.setSchool(teacher.getSchool());
 
-            subjectDao.save(subject); // ←後で作る必要あり
+            subjectDao.save(subject); 
 
         }
 

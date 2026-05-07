@@ -129,7 +129,7 @@ public class SubjectDao extends Dao {
         return count > 0;
     }
     
-    public boolean delete(String cd, School school) throws Exception {
+    public boolean delete(Subject subject) throws Exception {
 
         Connection connection = getConnection();
         PreparedStatement statement = null;
@@ -140,8 +140,8 @@ public class SubjectDao extends Dao {
                 "delete from subject where cd = ? and school_cd = ?"
             );
 
-            statement.setString(1, cd);
-            statement.setString(2, school.getCd());
+            statement.setString(1, subject.getCd());
+            statement.setString(2, subject.getSchool().getCd());
 
             count = statement.executeUpdate();
 
