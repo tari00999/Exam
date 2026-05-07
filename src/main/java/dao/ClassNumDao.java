@@ -264,4 +264,9 @@ public class ClassNumDao extends Dao {
 		return null;
 	}
 
+	public boolean delete(ClassNum c) {
+		// TODO 自動生成されたメソッド・スタブ
+		return false;
+	}
+
 }
