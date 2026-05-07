@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tool.Action;
 
-public class ClassNumDeleteExecuteAction extends Action {
+public class ClassNumCreateExecuteAction extends Action {
 
     @Override
     public void execute(
@@ -38,23 +38,36 @@ public class ClassNumDeleteExecuteAction extends Action {
         ClassNumDao dao =
             new ClassNumDao();
 
-        // 削除実行
-        boolean result =
-            dao.delete(c);
+        // 重複チェック
+        ClassNum old =
+            dao.get(classNum, school);
 
-        // メッセージ設定
-        if(result){
+        if (old == null) {
 
-            request.setAttribute(
-                "message",
-                "クラスを削除しました。"
-            );
+            // 登録
+            boolean result =
+                dao.save(c);
+
+            if (result) {
+
+                request.setAttribute(
+                    "message",
+                    "クラスを登録しました。"
+                );
+
+            } else {
+
+                request.setAttribute(
+                    "error",
+                    "登録に失敗しました。"
+                );
+            }
 
         } else {
 
             request.setAttribute(
                 "error",
-                "削除に失敗しました。"
+                "そのクラスは既に存在しています。"
             );
         }
 
