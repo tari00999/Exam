@@ -1,9 +1,5 @@
 package scoremanager.main;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import bean.School;
 import bean.Subject;
 import bean.Teacher;
 import dao.SubjectDao;
@@ -15,57 +11,32 @@ import tool.Action;
 public class SubjectUpdateExecuteAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        HttpSession session = request.getSession();
+        // セッション取得
+        HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // ログインチェック
-        if (teacher == null) {
-            response.sendRedirect("Login.action");
-            return;
-        }
+        // パラメータ取得
+        String code = req.getParameter("code");
+        String name = req.getParameter("name");
 
-        // ★ ここが重要
-        School school = teacher.getSchool();
+        // DAO
+        SubjectDao subjectDao = new SubjectDao();
 
-        String code = request.getParameter("code");
-        String name = request.getParameter("name");
-
-        Map<String, String> errors = new HashMap<>();
-
-        if (code == null || code.isEmpty()) {
-            errors.put("code", "科目コードが未入力です");
-        }
-        if (name == null || name.isEmpty()) {
-            errors.put("name", "科目名が未入力です");
-        }
-
-        if (!errors.isEmpty()) {
-            request.setAttribute("errors", errors);
-            request.setAttribute("code", code);
-            request.setAttribute("name", name);
-            request.getRequestDispatcher("subject_update.jsp").forward(request, response);
-            return;
-        }
-
+        // Subject作成
         Subject subject = new Subject();
-        subject.setCode(code);
+
+        // セット
+        subject.setCd(code);
         subject.setName(name);
-        subject.setSchool(school);
+        subject.setSchool(teacher.getSchool()); // ← これ重要！
 
-        SubjectDao dao = new SubjectDao();
-        int count = dao.update(subject);
+        // 更新（saveでUPDATEされる）
+        subjectDao.save(subject);
 
-        if (count == 0) {
-            errors.put("common", "更新に失敗しました");
-            request.setAttribute("errors", errors);
-            request.setAttribute("code", code);
-            request.setAttribute("name", name);
-            request.getRequestDispatcher("subject_update.jsp").forward(request, response);
-            return;
-        }
-
-        request.getRequestDispatcher("subject_update_done.jsp").forward(request, response);
+        // フォワード
+        req.getRequestDispatcher("subject_update_done.jsp")
+           .forward(req, res);
     }
 }

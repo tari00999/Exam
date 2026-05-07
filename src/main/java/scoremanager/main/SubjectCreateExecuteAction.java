@@ -3,63 +3,80 @@ package scoremanager.main;
 import java.util.HashMap;
 import java.util.Map;
 
-import bean.School;
-import bean.Subject;
+import bean.Student;
 import bean.Teacher;
-import dao.SubjectDao;
+import dao.StudentDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import tool.Action;
 
-public class SubjectCreateExecuteAction extends Action {
+public class StudentCreateExecuteAction extends Action {
 
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Override
+	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        HttpSession session = request.getSession();
-        Teacher teacher = (Teacher) session.getAttribute("user");
+		// ローカル変数の指定 1
+		HttpSession session = req.getSession(); // セッション
+		Teacher teacher = (Teacher)session.getAttribute("user");
+		int ent_year = 0; // 選択された入学年度
+		String student_no = ""; // 入力された学生番号
+		String student_name = ""; // 入力された氏名
+		String class_num = ""; // 選択されたクラス番号
+		Student student = new Student();
+		StudentDao studentDao = new StudentDao();
+		Map<String, String> errors = new HashMap<>(); // エラーメッセージ
 
-        // ログインチェック
-        if (teacher == null) {
-            response.sendRedirect("Login.action");
-            return;
-        }
+		// リクエストパラメーターの取得 2
+		ent_year = Integer.parseInt(req.getParameter("ent_year"));
+		student_no = req.getParameter("no");
+		student_name = req.getParameter("name");
+		class_num = req.getParameter("class_num");
 
-        // ★ 正しい取得方法
-        School school = teacher.getSchool();
+		// DBからデータ取得 3
+		// なし
 
-        String code = request.getParameter("code");
-        String name = request.getParameter("name");
+		// ビジネスロジック 4
+		if (ent_year == 0) { // 入学年度が未選択だった場合
+			errors.put("1", "入学年度を選択してください");
+			// リクエストにエラーメッセージをセット
+			req.setAttribute("errors", errors);
+		} else {
+			if (studentDao.get(student_no) != null) { // 学生番号が重複している場合
+				errors.put("2", "学生番号が重複しています");
+				// リクエストにエラーメッセージをセット
+				req.setAttribute("errors", errors);
+			} else {
+				// studentに学生情報をセット
+				student.setNo(student_no);
+				student.setName(student_name);
+				student.setEntYear(ent_year);
+				student.setClassNum(class_num);
+				student.setAttend(true);
+				student.setSchool(teacher.getSchool());
+				// saveメソッドで情報を登録
+				studentDao.save(student);
+			}
+		}
 
-        Map<String, String> errors = new HashMap<>();
+		// レスポンス値をセット 6
+		// リクエストに入学年度をセット
+		req.setAttribute("ent_year", ent_year);
+		// リクエストに学生番号をセット
+		req.setAttribute("no", student_no);
+		// リクエストに氏名をセット
+		req.setAttribute("name", student_name);
+		// リクエストにクラス番号をセット
+		req.setAttribute("class_num", class_num);
 
-        // 入力チェック
-        if (code == null || code.isEmpty()) {
-            errors.put("code", "科目コードを入力してください");
-        }
-        if (name == null || name.isEmpty()) {
-            errors.put("name", "科目名を入力してください");
-        }
+		// JSPへフォワード 7
+		if (errors.isEmpty()) { // エラーメッセージがない場合
+			// 登録完了画面にフォワード
+			req.getRequestDispatcher("student_create_done.jsp").forward(req, res);
+		} else { // エラーメッセージがある場合
+			// 登録画面にフォワード
+			req.getRequestDispatcher("StudentCreate.action").forward(req, res);
+		}
+	}
 
-        // エラー
-        if (!errors.isEmpty()) {
-            request.setAttribute("errors", errors);
-            request.setAttribute("code", code);
-            request.setAttribute("name", name);
-            request.getRequestDispatcher("subject_create.jsp").forward(request, response);
-            return;
-        }
-
-        // 登録
-        Subject subject = new Subject();
-        subject.setCode(code);
-        subject.setName(name);
-        subject.setSchool(school);
-
-        SubjectDao dao = new SubjectDao();
-        dao.insert(subject);
-
-        request.getRequestDispatcher("subject_create_done.jsp").forward(request, response);
-    }
 }

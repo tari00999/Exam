@@ -13,36 +13,31 @@ public class SubjectUpdateAction extends Action {
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
+        // セッション取得
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
-        // ログインチェック
-        if (teacher == null) {
-            res.sendRedirect("Login.action");
-            return;
-        }
-
+        // パラメータ取得
         String code = req.getParameter("code");
 
-        // パラメータチェック
-        if (code == null || code.isEmpty()) {
-            res.sendRedirect("SubjectList.action");
-            return;
-        }
+        // DAO
+        SubjectDao subjectDao = new SubjectDao();
 
-        SubjectDao dao = new SubjectDao();
-        Subject subject = dao.get(code, teacher.getSchool());
+        // DBから科目取得（学校も条件に入れるのが重要）
+        Subject subject = subjectDao.get(code, teacher.getSchool());
 
-        // データなし対策
+        // ★ null対策（ここかなり大事）
         if (subject == null) {
-            res.sendRedirect("SubjectList.action");
+            req.setAttribute("error", "科目が見つかりません");
+            req.getRequestDispatcher("subject_list.jsp").forward(req, res);
             return;
         }
 
-        // JSPに渡す
-        req.setAttribute("code", subject.getCode());
+        // リクエストにセット
+        req.setAttribute("code", subject.getCd());
         req.setAttribute("name", subject.getName());
 
+        // フォワード
         req.getRequestDispatcher("subject_update.jsp").forward(req, res);
     }
 }

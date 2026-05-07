@@ -1,7 +1,7 @@
 package scoremanager.main;
 
-import bean.School;
 import bean.Subject;
+import bean.Teacher;
 import dao.SubjectDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,49 +11,33 @@ import tool.Action;
 public class SubjectDeleteAction extends Action {
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-        HttpSession session = request.getSession();
-        School school = (School) session.getAttribute("school");
+        // セッション取得
+        HttpSession session = req.getSession();
+        Teacher teacher = (Teacher) session.getAttribute("user");
 
-        String code = request.getParameter("code");
+        // パラメータ取得
+        String code = req.getParameter("code");
 
-        if (code == null || code.isEmpty()) {
-            request.setAttribute("error", "科目コードが指定されていません");
-            request.getRequestDispatcher("subject_list.jsp").forward(request, response);
-            return;
-        }
+        // DAO
+        SubjectDao subjectDao = new SubjectDao();
 
-        SubjectDao dao = new SubjectDao();
+        // DBから取得（学校で絞るのが重要）
+        Subject subject = subjectDao.get(code, teacher.getSchool());
 
-        // ★ POSTなら削除実行
-        if ("POST".equalsIgnoreCase(request.getMethod())) {
-
-            int count = dao.delete(code, school);
-
-            if (count == 0) {
-                request.setAttribute("error", "削除に失敗しました");
-                request.getRequestDispatcher("subject_list.jsp").forward(request, response);
-                return;
-            }
-
-            request.getRequestDispatcher("subject_delete_done.jsp").forward(request, response);
-            return;
-        }
-
-        // ★ GETなら確認画面表示（←ここが重要）
-        Subject subject = dao.get(code, school);
-
+        // 見つからない場合
         if (subject == null) {
-            request.setAttribute("error", "科目が存在しません");
-            request.getRequestDispatcher("subject_list.jsp").forward(request, response);
+            req.setAttribute("error", "科目が見つかりません");
+            req.getRequestDispatcher("SubjectList.action").forward(req, res);
             return;
         }
 
         // JSPに渡す
-        request.setAttribute("code", subject.getCode());
-        request.setAttribute("name", subject.getName());
+        req.setAttribute("code", subject.getCd());
+        req.setAttribute("name", subject.getName());
 
-        request.getRequestDispatcher("subject_delete.jsp").forward(request, response);
+        // フォワード
+        req.getRequestDispatcher("subject_delete.jsp").forward(req, res);
     }
 }
