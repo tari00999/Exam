@@ -259,4 +259,9 @@ public class ClassNumDao extends Dao {
 		}
 	}
 
+	public List<ClassNum> findAll(School school) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }
