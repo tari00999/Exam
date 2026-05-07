@@ -37,6 +37,11 @@ public class ClassNum implements Serializable {
 		this.class_num = class_num;
 	}
 
+	public void setClassNum(String classNum) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
 
 
 }
