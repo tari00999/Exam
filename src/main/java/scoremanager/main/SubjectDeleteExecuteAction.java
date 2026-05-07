@@ -1,155 +1,38 @@
-package dao;
+package scoremanager.main;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
-import bean.School;
 import bean.Subject;
+import bean.Teacher;
+import dao.SubjectDao;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import tool.Action;
 
-public class SubjectDao extends Dao {
+public class SubjectDeleteExecuteAction extends Action {
 
-    private String baseSql = "select * from subject where school_cd = ?";
+    @Override
+    public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
-    public List<Subject> filter(School school) throws Exception {
+        // セッション取得
+        HttpSession session = req.getSession();
+        Teacher teacher = (Teacher) session.getAttribute("user");
 
-        List<Subject> list = new ArrayList<>();
+        // パラメータ取得
+        String code = req.getParameter("code");
 
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        // Subjectオブジェクトを作成
+        Subject subject = new Subject();
+        subject.setCd(code);
+        subject.setSchool(teacher.getSchool());
 
-        String order = " order by cd asc";
+        // DAO
+        SubjectDao subjectDao = new SubjectDao();
 
-        try {
-            statement = connection.prepareStatement(baseSql + order);
+        // 削除実行
+        subjectDao.delete(subject);
 
-            // school_cd をバインド
-            statement.setString(1, school.getCd());
-
-            resultSet = statement.executeQuery();
-
-            while (resultSet.next()) {
-                Subject subject = new Subject();
-
-                // DBカラム → Bean
-                subject.setCd(resultSet.getString("cd"));
-                subject.setName(resultSet.getString("name"));
-
-                // 引数で受け取ったSchoolをそのままセット
-                subject.setSchool(school);
-
-                list.add(subject);
-            }
-
-        } finally {
-            if (resultSet != null) resultSet.close();
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
-        }
-
-        return list;
+        // 完了画面へ
+        req.getRequestDispatcher("subject_delete_done.jsp")
+           .forward(req, res);
     }
-
-    // 単体取得（必要なら）
-    public Subject get(String cd, School school) throws Exception {
-
-        Subject subject = null;
-
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            statement = connection.prepareStatement(
-                "select * from subject where cd = ? and school_cd = ?"
-            );
-
-            statement.setString(1, cd);
-            statement.setString(2, school.getCd());
-
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                subject = new Subject();
-
-                subject.setCd(resultSet.getString("cd"));
-                subject.setName(resultSet.getString("name"));
-                subject.setSchool(school);
-            }
-
-        } finally {
-            if (resultSet != null) resultSet.close();
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
-        }
-
-        return subject;
-    }
-    
-    public boolean save(Subject subject) throws Exception {
-
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-        int count = 0;
-
-        try {
-            Subject old = get(subject.getCd(), subject.getSchool());
-
-            if (old == null) {
-                // INSERT
-                statement = connection.prepareStatement(
-                    "insert into subject(school_cd, cd, name) values(?, ?, ?)"
-                );
-
-                statement.setString(1, subject.getSchool().getCd());
-                statement.setString(2, subject.getCd());
-                statement.setString(3, subject.getName());
-
-            } else {
-                // UPDATE
-                statement = connection.prepareStatement(
-                    "update subject set name = ? where cd = ? and school_cd = ?"
-                );
-
-                statement.setString(1, subject.getName());
-                statement.setString(2, subject.getCd());
-                statement.setString(3, subject.getSchool().getCd());
-            }
-
-            count = statement.executeUpdate();
-
-        } finally {
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
-        }
-
-        return count > 0;
-    }
-    
-    public boolean delete(String cd, School school) throws Exception {
-
-        Connection connection = getConnection();
-        PreparedStatement statement = null;
-        int count = 0;
-
-        try {
-            statement = connection.prepareStatement(
-                "delete from subject where cd = ? and school_cd = ?"
-            );
-
-            statement.setString(1, cd);
-            statement.setString(2, school.getCd());
-
-            count = statement.executeUpdate();
-
-        } finally {
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
-        }
-
-        return count > 0;
-    }
-}}
+}

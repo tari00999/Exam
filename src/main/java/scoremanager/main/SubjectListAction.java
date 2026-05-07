@@ -1,6 +1,5 @@
 package scoremanager.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import bean.Subject;
@@ -16,29 +15,21 @@ public class SubjectListAction extends Action {
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
+        // セッションからログインユーザー取得
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
+        
 
-        if (teacher == null) {
-            res.sendRedirect("Login.action");
-            return;
-        }
+        // DAO
+        SubjectDao subjectDao = new SubjectDao();
 
-        SubjectDao dao = new SubjectDao();
-        List<Subject> subjects = null;
+        // 科目一覧取得（学校単位）
+        List<Subject> subjects = subjectDao.filter(teacher.getSchool());
 
-        try {
-            subjects = dao.findAll(teacher.getSchool());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // リクエストにセット
+        req.setAttribute("subjects_set", subjects);
 
-        if (subjects == null) {
-            subjects = new ArrayList<>();
-        }
-
-        req.setAttribute("subjects", subjects);
-
+        // フォワード
         req.getRequestDispatcher("subject_list.jsp").forward(req, res);
     }
 }
