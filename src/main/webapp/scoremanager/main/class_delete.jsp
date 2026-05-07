@@ -1,4 +1,4 @@
-<%-- 削除JSP --%>
+<%-- 削除機能JSP --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
