@@ -14,7 +14,7 @@ public class ClassUpdateAction extends Action {
 		// TODO 自動生成されたメソッド・スタブ
 		
 		//セッション
-		HttpSession session =request.getSession();
+		HttpSession session =req.getSession();
 		
 		//学生情報
 		School school=(school)session.getAttribute("school");
