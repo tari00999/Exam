@@ -17,10 +17,10 @@ public class ClassUpdateAction extends Action {
 		HttpSession session =req.getSession();
 		
 		//学生情報
-		School school=(school)session.getAttribute("school");
+		School school=(School)session.getAttribute("school");
 		
 		//パラメータ
-		Stiring classNum=request.getParameter("class_num");
+		String classNum=req.getParameter("class_num");
 		
 		//DAO
 		ClassNumDao dao=dao.get(classNum, school);
