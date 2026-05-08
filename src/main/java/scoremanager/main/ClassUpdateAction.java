@@ -26,7 +26,11 @@ public class ClassUpdateAction extends Action {
 		ClassNumDao dao=dao.get(classNum, school);
 		
 		//jspへ渡す
+		request.setAttribute("class_date",c);
 		
+		//更新画面
+		request,getRequestDispatcher("class_update.jsp")
+		.forward(request,response);
 	}
 
 }
