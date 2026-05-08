@@ -23,14 +23,16 @@ public class ClassUpdateAction extends Action {
 		String classNum=req.getParameter("class_num");
 		
 		//DAO
-		ClassNumDao dao=dao.get(classNum, school);
+		ClassNumDao dao = new ClassNumDao();
+		//データ取得
+		bean.ClassNum c = dao.get(classNum, school);
 		
 		//jspへ渡す
-		request.setAttribute("class_date",c);
+		req.setAttribute("class_data", c);
 		
 		//更新画面
-		request,getRequestDispatcher("class_update.jsp")
-		.forward(request,response);
+		req.getRequestDispatcher("class_update.jsp")
+		   .forward(req, res);
 	}
 
 }
