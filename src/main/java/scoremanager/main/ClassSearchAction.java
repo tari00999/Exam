@@ -15,13 +15,13 @@ public class ClassSearchAction extends Action {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // セッション取得
+        // セッション
         HttpSession session = request.getSession();
 
-        // 学校情報取得
+        // 学校情報
         School school = (School) session.getAttribute("school");
 
-        // 検索条件取得
+        // 検索条件
         String keyword = request.getParameter("keyword");
 
         // DAO
