@@ -1,6 +1,7 @@
 package scoremanager.main;
 
 import bean.School;
+import dao.ClassNumDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -19,6 +20,12 @@ public class ClassUpdateAction extends Action {
 		School school=(school)session.getAttribute("school");
 		
 		//パラメータ
+		Stiring classNum=request.getParameter("class_num");
+		
+		//DAO
+		ClassNumDao dao=dao.get(classNum, school);
+		
+		//jspへ渡す
 		
 	}
 
