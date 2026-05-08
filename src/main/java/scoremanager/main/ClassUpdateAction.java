@@ -1,6 +1,7 @@
 package scoremanager.main;
 
-import bean.School;
+import bean.ClassNum;
+import bean.Teacher;
 import dao.ClassNumDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,30 +10,51 @@ import tool.Action;
 
 public class ClassUpdateAction extends Action {
 
-	@Override
-	public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		// TODO 自動生成されたメソッド・スタブ
-		
-		//セッション
-		HttpSession session =req.getSession();
-		
-		//学生情報
-		School school=(School)session.getAttribute("school");
-		
-		//パラメータ
-		String classNum=req.getParameter("class_num");
-		
-		//DAO
-		ClassNumDao dao = new ClassNumDao();
-		//データ取得
-		bean.ClassNum c = dao.get(classNum, school);
-		
-		//jspへ渡す
-		req.setAttribute("class_data", c);
-		
-		//更新画面
-		req.getRequestDispatcher("class_update.jsp")
-		   .forward(req, res);
-	}
+    @Override
+    public void execute(HttpServletRequest req,
+                        HttpServletResponse res)
+            throws Exception {
 
+        // セッション取得
+        HttpSession session = req.getSession();
+
+        Teacher teacher =
+                (Teacher) session.getAttribute("user");
+
+        // パラメータ取得
+        String class_num =
+                req.getParameter("class_num");
+
+        // DAO
+        ClassNumDao classNumDao =
+                new ClassNumDao();
+
+        // DBからクラス取得
+        ClassNum classNum =
+                classNumDao.get(
+                        class_num,
+                        teacher.getSchool());
+
+        // null対策
+        if (classNum == null) {
+
+            req.setAttribute(
+                    "error",
+                    "クラス情報が見つかりません");
+
+            req.getRequestDispatcher("class_list.jsp")
+                    .forward(req, res);
+
+            return;
+        }
+
+        // リクエストにセット
+        req.setAttribute(
+                "class_num",
+                classNum.getClass_num());
+
+        // フォワード
+        req.getRequestDispatcher("class_update.jsp")
+                .forward(req, res);
+    }
 }

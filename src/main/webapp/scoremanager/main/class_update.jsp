@@ -1,52 +1,88 @@
-<%-- クラス更新JSP --%>
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="bean.ClassNum" %>
+<%-- クラス情報変更JSP --%>
+<%@ page language="java"
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" %>
 
-<%
-    ClassNum c =
-        (ClassNum)request.getAttribute("class_data");
-%>
+<%@ taglib prefix="c"
+    uri="jakarta.tags.core"%>
 
-<html>
-<head>
-    <title>クラス変更</title>
-</head>
-<body>
+<c:import url="/common/base.jsp">
 
-<h2>クラス変更</h2>
+    <c:param name="title">
+        得点管理システム
+    </c:param>
 
-<form action="ClassUpdateExecute.action" method="post">
+    <c:param name="scripts"></c:param>
 
-    <table border="1">
+    <c:param name="content">
 
-        <tr>
-            <th>クラス番号</th>
-            <td>
+        <section>
 
-                <!-- 元の値を保持 -->
+            <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
+                クラス情報変更
+            </h2>
+
+            <form action="ClassUpdateExecute.action"
+                  method="post">
+
+                <%-- 変更前クラス番号(hidden) --%>
                 <input type="hidden"
-                       name="old_class_num"
-                       value="<%= c.getClass_num() %>">
-
-                <!-- 更新用 -->
-                <input type="text"
                        name="class_num"
-                       value="<%= c.getClass_num() %>">
+                       value="${class_num}" />
 
-            </td>
-        </tr>
+                <%-- 現在のクラス番号表示 --%>
+                <div class="mx-auto py-2">
 
-    </table>
+                    <label>
+                        現在のクラス番号
+                    </label><br>
 
-    <br>
+                    <input class="border border-0 ps-3"
+                           type="text"
+                           value="${class_num}"
+                           readonly />
 
-    <input type="submit" value="変更">
+                </div>
 
-</form>
+                <%-- 新しいクラス番号 --%>
+                <div class="mx-auto py-2">
 
-<br>
+                    <label for="new_class_num">
+                        新しいクラス番号
+                    </label><br>
 
-<a href="ClassList.action">一覧へ戻る</a>
+                    <input class="form-control"
+                           type="text"
+                           id="new_class_num"
+                           name="new_class_num"
+                           value="${new_class_num}"
+                           required
+                           maxlength="10" />
 
-</body>
-</html>
+                </div>
+
+                <%-- エラー表示 --%>
+                <div class="mt-2 text-warning">
+                    ${errors.get("new_class_num")}
+                </div>
+
+                <%-- 更新ボタン --%>
+                <div class="mx-auto py-2">
+
+                    <input class="btn btn-primary"
+                           type="submit"
+                           value="変更" />
+
+                </div>
+
+            </form>
+
+            <a href="ClassList.action">
+                戻る
+            </a>
+
+        </section>
+
+    </c:param>
+
+</c:import>

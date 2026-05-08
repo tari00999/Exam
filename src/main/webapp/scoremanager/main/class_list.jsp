@@ -1,104 +1,78 @@
-<%-- クラス一覧JSP --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java"
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" %>
 
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>クラス一覧</title>
+<c:import url="/common/base.jsp">
 
-<style>
+    <c:param name="title">
+        得点管理システム
+    </c:param>
 
-body{
-    font-family:sans-serif;
-    margin:20px;
-}
+    <c:param name="content">
 
-table{
-    border-collapse:collapse;
-    width:500px;
-}
+        <section class="me-4">
 
-th,td{
-    border:1px solid #999;
-    padding:10px;
-    text-align:center;
-}
+            <h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
+                クラス管理
+            </h2>
 
-th{
-    background-color:#eeeeee;
-}
+            <div class="my-2 text-end px-4">
+                <a href="ClassCreate.action">
+                    新規登録
+                </a>
+            </div>
 
-.menu{
-    margin-bottom:20px;
-}
+            <c:choose>
 
-.message{
-    color:green;
-}
+                <c:when test="${classes_set.size() > 0}">
 
-.error{
-    color:red;
-}
+                    <table class="table">
 
-</style>
+                        <tr>
+                            <th>クラス番号</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
 
-</head>
-<body>
+                        <c:forEach var="class_num"
+                                   items="${classes_set}">
 
-<h1>クラス管理</h1>
+                            <tr>
 
-<div class="menu">
+                                <td>${class_num}</td>
 
-    <a href="ClassNumCreate.action">
-        新規登録
-    </a>
+                                <td>
+                                    <a href="ClassUpdate.action?class_num=${class_num}">
+                                        変更
+                                    </a>
+                                </td>
 
-</div>
+                                <td>
+                                    <a href="ClassDelete.action?class_num=${class_num}">
+                                        削除
+                                    </a>
+                                </td>
 
-<c:if test="${not empty message}">
-    <p class="message">
-        ${message}
-    </p>
-</c:if>
+                            </tr>
 
-<c:if test="${not empty error}">
-    <p class="error">
-        ${error}
-    </p>
-</c:if>
+                        </c:forEach>
 
-<table>
+                    </table>
 
-<tr>
-    <th>クラス番号</th>
-    <th>操作</th>
-</tr>
+                </c:when>
 
-<c:forEach var="c" items="${classList}">
+                <c:otherwise>
+                    <div>
+                        クラス情報が存在しませんでした。
+                    </div>
+                </c:otherwise>
 
-<tr>
+            </c:choose>
 
-    <td>
-        ${c.classNum}
-    </td>
+        </section>
 
-    <td>
+    </c:param>
 
-        <a href="ClassNumDelete.action?classNum=${c.classNum}">
-            削除
-        </a>
-
-    </td>
-
-</tr>
-
-</c:forEach>
-
-</table>
-
-</body>
-</html>
+</c:import>
