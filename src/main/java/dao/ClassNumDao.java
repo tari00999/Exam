@@ -269,4 +269,9 @@ public class ClassNumDao extends Dao {
 		return false;
 	}
 
+	public List<ClassNum> search(String keyword, School school) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }
