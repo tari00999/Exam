@@ -258,5 +258,25 @@ public class ClassNumDao extends Dao {
 			return false;
 		}
 	}
+	
+	public boolean delete(ClassNum classNum) throws Exception {
+
+	    Connection con = getConnection();
+
+	    PreparedStatement st = con.prepareStatement(
+	        "delete from class_num " +
+	        "where class_num = ? and school_cd = ?"
+	    );
+
+	    st.setString(1, classNum.getClass_num());
+	    st.setString(2, classNum.getSchool().getCd());
+
+	    int line = st.executeUpdate();
+
+	    st.close();
+	    con.close();
+
+	    return line > 0;
+	}
 
 }
