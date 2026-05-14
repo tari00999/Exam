@@ -1,6 +1,7 @@
 package scoremanager.main;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import bean.Subject;
@@ -50,8 +51,23 @@ public class SubjectCreateExecuteAction extends Action {
         // 重複チェック（コード）
         if (errors.isEmpty()) {
             if (subjectDao.get(code, teacher.getSchool()) != null) {
-                errors.put("code", "その科目コードは既に登録されています");
+                errors.put("code", "科目コードが重複しています");
             }
+        }
+        
+        if (!errors.isEmpty()) {
+
+            
+            List<Subject> subjects = subjectDao.filter(teacher.getSchool());
+
+            req.setAttribute("subjects_set", subjects);
+            req.setAttribute("code", code);
+            req.setAttribute("name", name);
+            req.setAttribute("errors", errors);
+
+            req.getRequestDispatcher("subject_create.jsp")
+               .forward(req, res);
+            return;
         }
 
         // -----------------------
