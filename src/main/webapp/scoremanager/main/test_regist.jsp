@@ -9,7 +9,7 @@
 
 	<section>
 		<h2 class="h3 mb-3 fw-normal bg-secondary bg-opacity-10 py-2 px-4">
-			成績管理
+			成績登録
 		</h2>
 
 		<!-- 検索 -->
@@ -60,6 +60,13 @@
 		</form>
 
 		<hr>
+		
+		<!-- メッセージ表示 -->
+		<c:if test="${message != null}">
+    		<div class="alert alert-warning mx-4">
+        		${message}
+    		</div>
+		</c:if>
 
 		<!-- 結果 -->
 		<c:if test="${students != null}">

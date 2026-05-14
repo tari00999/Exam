@@ -12,6 +12,15 @@
 			成績参照
 		</h2>
 
+		<!-- エラーメッセージ -->
+    	<c:if test="${errors != null}">
+        	<div class="alert alert-danger mx-4">
+            	<c:forEach var="e" items="${errors}">
+                	<div>${e.value}</div>
+            	</c:forEach>
+        	</div>
+    	</c:if>
+
 		<!-- ================= 科目・クラス検索 ================= -->
 		<form action="TestListSubjectExecute.action" method="get" class="px-4">
 

@@ -97,6 +97,8 @@ public class TestListAction extends Action {
                         subjectCd,
                         1 // ←回数固定（必要なら変更）
                 );
+                
+                req.setAttribute("tests", list);
 
                 // データなし
                 if (list == null || list.isEmpty()) {

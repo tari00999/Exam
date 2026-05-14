@@ -21,12 +21,6 @@
 			</div>
 		</c:if>
 
-		<!-- データなし -->
-		<c:if test="${tests == null || tests.size() == 0}">
-			<div class="alert alert-warning mx-4">
-				該当するデータが存在しません
-			</div>
-		</c:if>
 
 		<!-- 結果表示 -->
 		<c:if test="${tests != null && tests.size() > 0}">

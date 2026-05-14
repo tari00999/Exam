@@ -1,11 +1,15 @@
 package scoremanager.main;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import bean.Teacher;
 import bean.Test;
+import dao.ClassNumDao;
+import dao.SubjectDao;
 import dao.TestDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -88,14 +92,42 @@ public class TestListSubjectExecuteAction extends Action {
         // =========================
         if (list == null || list.isEmpty()) {
 
-            errors.put("nodata", "該当する成績がありません");
+        	errors.put("nodata", "成績情報が存在しませんでした");
 
             req.setAttribute("errors", errors);
             req.setAttribute("ent_year", entYearStr);
             req.setAttribute("class_num", classNum);
             req.setAttribute("subject_cd", subjectCd);
+            
+            // =========================
+            // プルダウン再生成
+            // =========================
+            ClassNumDao classNumDao = new ClassNumDao();
+            SubjectDao subjectDao = new SubjectDao();
 
-            req.getRequestDispatcher("test_list.jsp").forward(req, res);
+            List<String> classList =
+                    classNumDao.filter(teacher.getSchool());
+
+            List<?> subjectList =
+                    subjectDao.filter(teacher.getSchool());
+
+            req.setAttribute("class_num_set", classList);
+            req.setAttribute("subject_set", subjectList);
+
+            // 年度
+            LocalDate today = LocalDate.now();
+            int year = today.getYear();
+
+            List<Integer> entYearSet = new ArrayList<>();
+
+            for (int i = year - 10; i <= year; i++) {
+                entYearSet.add(i);
+            }
+
+            req.setAttribute("ent_year_set", entYearSet);
+
+
+            req.getRequestDispatcher("test_list_subject.jsp").forward(req, res);
             return;
         }
 

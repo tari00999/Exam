@@ -36,7 +36,7 @@ public class TestListStudentExecuteAction extends Action {
         // 入力チェック
         // =========================
         if (studentNo == null || studentNo.isEmpty()) {
-            errors.put("student_no", "学生番号を入力してください");
+            errors.put("student_no", "このフィールドを入力してください");
         }
 
         if (!errors.isEmpty()) {
@@ -57,7 +57,7 @@ public class TestListStudentExecuteAction extends Action {
 
         // データなし
         if (list == null || list.isEmpty()) {
-            errors.put("nodata", "該当する成績が存在しません");
+        	errors.put("nodata", "成績情報が存在しませんでした");
             req.setAttribute("errors", errors);
         }
 

@@ -83,7 +83,15 @@ public class TestRegistAction extends Action {
                     classNum,
                     true);
 
-            req.setAttribute("students", students);
+            // 学生情報が存在しない場合
+            if (students == null || students.isEmpty()) {
+
+                req.setAttribute("message", "学生情報が存在しませんでした");
+
+            } else {
+
+                req.setAttribute("students", students);
+            }
 
             // 再表示用
             req.setAttribute("ent_year", entYear);
