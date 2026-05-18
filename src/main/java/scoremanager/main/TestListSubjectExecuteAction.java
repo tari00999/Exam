@@ -127,7 +127,7 @@ public class TestListSubjectExecuteAction extends Action {
             req.setAttribute("ent_year_set", entYearSet);
 
 
-            req.getRequestDispatcher("test_list_subject.jsp").forward(req, res);
+            req.getRequestDispatcher("test_list.jsp").forward(req, res);
             return;
         }
 

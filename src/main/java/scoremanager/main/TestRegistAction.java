@@ -20,9 +20,13 @@ public class TestRegistAction extends Action {
     @Override
     public void execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 
+        // =========================
+        // セッション取得
+        // =========================
         HttpSession session = req.getSession();
         Teacher teacher = (Teacher) session.getAttribute("user");
 
+        // 未ログイン対策
         if (teacher == null) {
             res.sendRedirect("login.jsp");
             return;
@@ -36,7 +40,7 @@ public class TestRegistAction extends Action {
         StudentDao studentDao = new StudentDao();
 
         // =========================
-        // 初期データ
+        // 初期データ取得
         // =========================
         List<String> classList = classNumDao.filter(teacher.getSchool());
         List<Subject> subjectList = subjectDao.filter(teacher.getSchool());
@@ -45,7 +49,7 @@ public class TestRegistAction extends Action {
         req.setAttribute("subject_set", subjectList);
 
         // =========================
-        // 年リスト（重要：これ追加）
+        // 入学年度リスト
         // =========================
         LocalDate today = LocalDate.now();
         int year = today.getYear();
@@ -67,41 +71,63 @@ public class TestRegistAction extends Action {
         String noStr = req.getParameter("no");
 
         // =========================
+        // 検索ボタン押下判定
+        // =========================
+        boolean isSearch =
+                entYearStr != null ||
+                classNum != null ||
+                subjectCd != null ||
+                noStr != null;
+
+        // =========================
         // 検索処理
         // =========================
-        if (entYearStr != null && classNum != null && subjectCd != null && noStr != null
-                && !entYearStr.isEmpty()
-                && !classNum.isEmpty()
-                && !subjectCd.isEmpty()
-                && !noStr.isEmpty()) {
-
-            int entYear = Integer.parseInt(entYearStr);
-
-            List<Student> students = studentDao.filter(
-                    teacher.getSchool(),
-                    entYear,
-                    classNum,
-                    true);
-
-            // 学生情報が存在しない場合
-            if (students == null || students.isEmpty()) {
-
-                req.setAttribute("message", "学生情報が存在しませんでした");
-
-            } else {
-
-                req.setAttribute("students", students);
-            }
+        if (isSearch) {
 
             // 再表示用
-            req.setAttribute("ent_year", entYear);
+            req.setAttribute("ent_year", entYearStr);
             req.setAttribute("class_num", classNum);
             req.setAttribute("subject_cd", subjectCd);
             req.setAttribute("no", noStr);
+
+            // 入力チェック
+            if (entYearStr == null || entYearStr.isEmpty()
+                    || classNum == null || classNum.isEmpty()
+                    || subjectCd == null || subjectCd.isEmpty()
+                    || noStr == null || noStr.isEmpty()) {
+
+                req.setAttribute(
+                        "message",
+                        "入学年度とクラスと科目と回数を選択してください");
+
+            } else {
+
+                // 型変換
+                int entYear = Integer.parseInt(entYearStr);
+
+                // 学生検索
+                List<Student> students = studentDao.filter(
+                        teacher.getSchool(),
+                        entYear,
+                        classNum,
+                        true);
+
+                // 学生存在チェック
+                if (students == null || students.isEmpty()) {
+
+                    req.setAttribute(
+                            "message",
+                            "学生情報が存在しませんでした");
+
+                } else {
+
+                    req.setAttribute("students", students);
+                }
+            }
         }
 
         // =========================
-        // フォワード
+        // JSPへフォワード
         // =========================
         req.getRequestDispatcher("test_regist.jsp").forward(req, res);
     }
